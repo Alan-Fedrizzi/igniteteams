@@ -6,7 +6,7 @@ import {
   Roboto_700Bold,
 } from "@expo-google-fonts/roboto";
 import theme from "./src/theme";
-import { Players } from "./src/screens/Players";
+import { Routes } from "./src/routes";
 import { Loading } from "./src/components/Loading";
 
 export default function App() {
@@ -21,7 +21,7 @@ export default function App() {
         translucent
       />
       {/* vamos verificar se as fontes foram carregadas antes: */}
-      {fontsLoaded ? <Players /> : <Loading />}
+      {fontsLoaded ? <Routes /> : <Loading />}
     </ThemeProvider>
   );
 }

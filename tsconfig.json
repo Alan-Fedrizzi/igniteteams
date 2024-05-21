@@ -9,7 +9,8 @@
       "@screens/*": ["./src/screens/*"],
       "@storage/*": ["./src/storage/*"],
       "@utils/*": ["./src/utils/*"]
-    }
+    },
+    "strictPropertyInitialization": false
   },
   "include": ["**/*.ts", "**/*.tsx"]
 }

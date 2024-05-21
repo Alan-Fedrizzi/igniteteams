@@ -16,3 +16,6 @@ export function Routes() {
     </View>
   );
 }
+
+// terminei rotas...
+// agora é a ultima seção

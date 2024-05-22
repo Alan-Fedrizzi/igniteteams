@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { FlatList } from "react-native";
+import { Alert, FlatList } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 // import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
@@ -11,6 +11,7 @@ import { Highlight } from "../../components/Highlight";
 import { GroupCard } from "../../components/GroupCard";
 import { ListEmpty } from "../../components/ListEmpty";
 import { Button } from "../../components/Button";
+import { Loading } from "../../components/Loading";
 
 // type RootParamList = {
 //   groups: undefined;
@@ -27,6 +28,7 @@ import { Button } from "../../components/Button";
 
 // export function Groups({ navigation }: GroupsProps) {
 export function Groups() {
+  const [isLoading, setIsLoading] = useState(true);
   // não precisaríamos deixar o type explícito, ele infere
   const [groups, setGroups] = useState<string[]>([
     "turma 1",
@@ -47,10 +49,14 @@ export function Groups() {
 
   async function fetchGroups() {
     try {
+      setIsLoading(true);
       const data = await groupsGetAll();
       setGroups(data);
     } catch (error) {
       console.error(error);
+      Alert.alert("Turmas", "Não foi possível carregar as turmas.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -66,7 +72,8 @@ export function Groups() {
   useFocusEffect(
     useCallback(() => {
       fetchGroups();
-    }, [])
+      // }, []) ele não passou o groups como dependência, mas para mim qd deleta o grupo e automativamente volta para essa tela, o grupo deletado ainda está visível
+    }, [groups])
   );
 
   return (
@@ -74,18 +81,23 @@ export function Groups() {
     <Container>
       <Header />
       <Highlight title="Turmas" subtitle="Jogue com a sua turma" />
-      <FlatList
-        data={groups}
-        keyExtractor={(item) => item}
-        renderItem={({ item }) => (
-          <GroupCard title={item} onPress={() => handleOpenGroup(item)} />
-        )}
-        ListEmptyComponent={() => (
-          <ListEmpty message="Que tal cadastrar a primeira turma?" />
-        )}
-        contentContainerStyle={!groups.length && { flex: 1 }}
-        showsVerticalScrollIndicator={false}
-      />
+
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <FlatList
+          data={groups}
+          keyExtractor={(item) => item}
+          renderItem={({ item }) => (
+            <GroupCard title={item} onPress={() => handleOpenGroup(item)} />
+          )}
+          ListEmptyComponent={() => (
+            <ListEmpty message="Que tal cadastrar a primeira turma?" />
+          )}
+          contentContainerStyle={!groups.length && { flex: 1 }}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
 
       <Button title="Criar nova turma" onPress={handleNewGroup} />
     </Container>
